@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+
+<head> 
+  <meta charset="utf-8"> 
+  <title>controller</title> 
+</head>
+
+<body>
+
+  <div style="text-align:center">
+    <div>
+      <video id="video1" width="600 px">
+      </video>
+      <p>Now: <span id="videoNow"></span></p>
+    </div>
+    <div>
+      <button onclick="VidCtrl.togglePlay()">视频播放/暂停</button>
+      <button onclick="VidCtrl.toggleMuted()">视频静音/取消</button>
+      <button onclick="VidCtrl.volumeUp()">音量+</button>
+      <button onclick="VidCtrl.volumeDown()">音量-</button>
+      <button onclick="VidCtrl.next()">下一个</button>
+    </div>
+    <div>
+      <ol id="videoList"></ol>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('drop', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      for (const f of e.dataTransfer.files)
+        VidCtrl.appendVideo(f.path);
+    });
+    document.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+    });
+  </script>
+
+  <script>
+    VidCtrl = new VideoController(document.getElementById("video1"), ["src/1.mp4", "src/2.mp4"]);
+    VidCtrl.next();
+
+    function VideoController(vid, playList) {
+      this.togglePlay = function () {
+        this.vid.paused ? this.vid.play() : this.vid.pause();
+      };
+      this.next = function () {
+        if (!this.playList.length) return;
+        var file = this.playList.shift();
+        this.nowItem.innerText = this.listIems.childNodes[0].innerText;
+        this.listIems.removeChild(this.listIems.childNodes[0]);
+        var status = this.vid.paused;
+        this.vid.src = file;
+        this.vid.load();
+        status || this.vid.play();
+      };
+      this.volumeUp = function () {
+        this.vid.volume = Math.min(this.vid.volume + 0.1, 1);
+      };
+      this.volumeDown = function () {
+        this.vid.volume = Math.max(this.vid.volume - 0.1, 0);
+      };
+      this.toggleMuted = function () {
+        this.vid.muted ^= 1;
+      };
+      this.appendVideo = function (file) {
+        var newP = document.createElement("li");
+        newP.appendChild(document.createTextNode(file));
+        this.listIems.appendChild(newP);
+        this.playList.push(file);
+      }
+
+      this.vid = vid;
+      this.playList = [];
+      this.vid.volume = 0.25;
+      this.nowItem = document.getElementById("videoNow");
+      this.listIems = document.getElementById("videoList");
+      for (var i = 0; i < playList.length; ++i)
+        this.appendVideo(playList[i]);
+    }
+  </script>
+
+</body>
+
+</html>

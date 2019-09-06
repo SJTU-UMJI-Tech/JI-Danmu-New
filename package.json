@@ -1,0 +1,16 @@
+{
+  "name": "ji-danmu-new",
+  "version": "0.1.0",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": "https://github.com/SJTU-UMJI-Tech/JI-Danmu-New",
+  "keywords": [
+    "Electron",
+    "danmu"
+  ],
+  "devDependencies": {
+    "electron": "^5.0.10"
+  }
+}
