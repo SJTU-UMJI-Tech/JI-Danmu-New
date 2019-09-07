@@ -2,87 +2,43 @@
 <html>
 
 <head> 
-  <meta charset="utf-8"> 
-  <title>controller</title> 
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>controller</title>
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
 
 <body>
-
-  <div style="text-align:center">
-    <div>
-      <video id="video1" width="600 px">
-      </video>
-      <p>Now: <span id="videoNow"></span></p>
+    <div style="text-align:center">
+        <video id="video1" width="600 px">
+        </video>
+        <audio id="audio1"></audio>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col">
+                    <div id="vidCtrler">
+                    </div>
+                </div>
+                <div class="col">
+                    <div id="audCtrler">
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div>
-      <button onclick="VidCtrl.togglePlay()">视频播放/暂停</button>
-      <button onclick="VidCtrl.toggleMuted()">视频静音/取消</button>
-      <button onclick="VidCtrl.volumeUp()">音量+</button>
-      <button onclick="VidCtrl.volumeDown()">音量-</button>
-      <button onclick="VidCtrl.next()">下一个</button>
-    </div>
-    <div>
-      <ol id="videoList"></ol>
-    </div>
-  </div>
 
-  <script>
-    document.addEventListener('drop', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      for (const f of e.dataTransfer.files)
-        VidCtrl.appendVideo(f.path);
-    });
-    document.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-    });
-  </script>
-
-  <script>
-    VidCtrl = new VideoController(document.getElementById("video1"), ["src/1.mp4", "src/2.mp4"]);
-    VidCtrl.next();
-
-    function VideoController(vid, playList) {
-      this.togglePlay = function () {
-        this.vid.paused ? this.vid.play() : this.vid.pause();
-      };
-      this.next = function () {
-        if (!this.playList.length) return;
-        var file = this.playList.shift();
-        this.nowItem.innerText = this.listIems.childNodes[0].innerText;
-        this.listIems.removeChild(this.listIems.childNodes[0]);
-        var status = this.vid.paused;
-        this.vid.src = file;
-        this.vid.load();
-        status || this.vid.play();
-      };
-      this.volumeUp = function () {
-        this.vid.volume = Math.min(this.vid.volume + 0.1, 1);
-      };
-      this.volumeDown = function () {
-        this.vid.volume = Math.max(this.vid.volume - 0.1, 0);
-      };
-      this.toggleMuted = function () {
-        this.vid.muted ^= 1;
-      };
-      this.appendVideo = function (file) {
-        var newP = document.createElement("li");
-        newP.appendChild(document.createTextNode(file));
-        this.listIems.appendChild(newP);
-        this.playList.push(file);
-      }
-
-      this.vid = vid;
-      this.playList = [];
-      this.vid.volume = 0.25;
-      this.nowItem = document.getElementById("videoNow");
-      this.listIems = document.getElementById("videoList");
-      for (var i = 0; i < playList.length; ++i)
-        this.appendVideo(playList[i]);
-    }
-  </script>
-
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.bootcss.com/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
+    </script>
+    <script src="src/js/MediaController.js"></script>
+    <script src="src/js/control.js"></script>
 </body>
 
 </html>

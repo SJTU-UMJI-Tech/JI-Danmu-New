@@ -14,15 +14,14 @@ function createWindow() {
   })
 
   mainWindow.setIgnoreMouseEvents(true);
-
   // mainWindow.setSkipTaskbar(true);
   mainWindow.loadFile('index.html')
 
   controlWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
-    title: 'control'
+    title: 'control',
+    // resizable: false
   })
+  controlWindow.maximize()
   controlWindow.loadFile('control.html')
 
   controlWindow.on('closed', function () {
