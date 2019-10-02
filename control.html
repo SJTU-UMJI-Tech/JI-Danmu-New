@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html style="height: 100%">
 
 <head> 
     <meta charset="utf-8">
@@ -7,36 +7,59 @@
     <title>controller</title>
     <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css"
         integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
 </head>
 
-<body>
-    <div style="text-align:center">
-        <video id="video1" width="600 px">
-        </video>
+<body style="height: 90%">
+    <div style="text-align:center; height: 100%">
         <audio id="audio1"></audio>
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col">
+        <div class="container-fluid h-100">
+            <div class="row h-100">
+                <div class="col h-100">
                     <div id="vidCtrler">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Video</h5>
+                                <div>
+                                    <button class="btn btn-outline-primary" id="togglePlay">Play/Pause</button>
+                                    <button class="btn btn-outline-primary" id="next">Next</button>
+                                    <button class="btn btn-outline-primary"
+                                        id="toggleVisibility">Visible/Invisible</button>
+                                    <button class="btn btn-outline-primary" id="toggleMuted">Mute/Unmute</button>
+                                </div>
+                                <br />
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Volume</span>
+                                    </div>
+                                    <input type="text" class="form-control" id="volume" style="text-align:center"
+                                        value="25">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary" id="volumeDown">-</button>
+                                        <button class="btn btn-outline-secondary" id="volumeUp">+</button>
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="col pre-scrollable">
+                                    <ul class="list-group" id="videoList">
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="col">
+                <div class="col h-100">
                     <div id="audCtrler">
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.slim.min.js"
-        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
-    </script>
-    <script src="https://cdn.bootcss.com/popper.js/1.12.9/umd/popper.min.js"
-        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
-    </script>
-    <script src="https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js"
-        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
-    </script>
     <script src="src/js/MediaController.js"></script>
     <script src="src/js/control.js"></script>
 </body>

@@ -10,7 +10,11 @@ function createWindow() {
     backgroundColor: "#00FFFFFF",
     frame: false,
     alwaysOnTop: true,
-    fullscreen: true
+    fullscreen: true,
+    title: 'danmu',
+    webPreferences: {
+      nodeIntegration: true
+    }
   })
 
   mainWindow.setIgnoreMouseEvents(true);
@@ -19,6 +23,9 @@ function createWindow() {
 
   controlWindow = new BrowserWindow({
     title: 'control',
+    webPreferences: {
+      nodeIntegration: true
+    }
     // resizable: false
   })
   controlWindow.maximize()
@@ -38,4 +45,10 @@ app.on('window-all-closed', function () {
 
 app.on('activate', function () {
   if (mainWindow === null) createWindow()
+})
+
+const { ipcMain } = require('electron')
+
+ipcMain.on('vidCtrler', (event, arg) => {
+  mainWindow.webContents.send('vidCtrler', arg)
 })

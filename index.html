@@ -23,10 +23,20 @@
             width: 100%;
             height: 100%;
             position: fixed;
+            pointer-events: none;
         }
     </style>
+    <script>
+        if (typeof module === 'object') {
+            window.module = module;
+            module = undefined;
+        }
+    </script>
     <script src="src/js/jquery-2.1.4.min.js"></script>
     <script src="src/js/jquery.danmu.js"></script>
+    <script>
+        if (window.module) module = window.module;
+    </script>
 </head>
 
 <body class="center">
@@ -34,7 +44,9 @@
     <div id="danmuarea">
         <div id="danmu">
         </div>
+        <video id="player"></video>
     </div>
+    <script src="src/js/MediaController.js"></script>
     <script src="src/js/index.js"></script>
 </body>
 

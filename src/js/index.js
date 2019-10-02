@@ -2,8 +2,17 @@ let Danmu
 let player
 
 Danmu = $("#danmu")
-var myVideo = document.getElementById("player");
-myPlayer = $("#player")[0]
+myPlayer = document.querySelector("#player")
+
+VidCtrl = new MediaController(null, myPlayer);
+
+const { ipcRenderer } = require('electron')
+ipcRenderer.on('vidCtrler', (event, arg) => {
+  var cmd = 'VidCtrl.' + arg
+  console.log(cmd)
+  eval(cmd)
+})
+
 //初始化
 Danmu.danmu({
   left: 0,
@@ -23,8 +32,7 @@ sendDanmu("这是顶部弹幕", "blue", 1, 1);
 sendDanmu("这是底部弹幕", "red", 2, 1);
 
 $('#danmu').danmu('danmuResume');
-timedCount();
-setTimeout(player.pause(), 4000);
+// timedCount();
 
 function timedCount() {
   $("#time").text($('#danmu').data("nowTime"));
