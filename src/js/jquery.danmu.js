@@ -160,7 +160,7 @@ var cyntax = {
     cyntax.plugins.timer = function (ele, options) {
         this.$this = $(ele);
         this.options = $.extend({}, this.defaults, options);
-        this.timer_info = {id: null, index: null, state: 0};
+        this.timer_info = { id: null, index: null, state: 0 };
     };
     cyntax.plugins.timer.prototype = {
         defaults: {
@@ -268,7 +268,7 @@ var cyntax = {
         me.height = this.$element.height();
         me.width = this.$element.width();
         //速度
-        me.speed = 1000/options.speed;
+        me.speed = 1000 / options.speed;
 
         //防止重复
         this.launched = [];
@@ -284,14 +284,16 @@ var cyntax = {
             me.rowCount = me.rowCount - 3;
         }
         this.rows = [];
-        this.topRows=[];
-        this.bottomRows=[];
+        this.reRows = [];
+        this.topRows = [];
+        this.bottomRows = [];
         this.initRows = function (me) {
             // me.rowCount = parseInt(me.height / options.FontSizeBig);
             for (var i = 0; i < me.rowCount; i++) {
                 me.rows[i] = 0;
-                me.topRows[i]=0;
-                me.bottomRows[i]=0;
+                me.reRows[i] = 0;
+                me.topRows[i] = 0;
+                me.bottomRows[i] = 0;
             }
 
         };
@@ -302,7 +304,18 @@ var cyntax = {
             while (me.rows[result] !== 0) {
                 result = result + 1;
                 if (result >= me.rowCount) {
-
+                    me.initRows(me);
+                    result = 0;
+                    break;
+                }
+            }
+            return result;
+        };
+        me.getReRow = function (me) {
+            var result = 0;
+            while (me.reRows[result] !== 0) {
+                result = result + 1;
+                if (result >= me.rowCount) {
                     me.initRows(me);
                     result = 0;
                     break;
@@ -311,24 +324,33 @@ var cyntax = {
             return result;
         };
         me.getTopRow = function (me) {
-            for(var i=0;i<me.topRows.length;i++){
-                if (me.topRows[i] == 0){
+            for (var i = 0; i < me.topRows.length; i++) {
+                if (me.topRows[i] == 0) {
                     return i;
                 }
             }
         };
 
         me.getBottomRow = function (me) {
-            for(var i=0;i<me.bottomRows.length;i++){
-                if (me.bottomRows[i] == 0){
+            for (var i = 0; i < me.bottomRows.length; i++) {
+                if (me.bottomRows[i] == 0) {
                     return i;
                 }
             }
         };
         me.checkRow = function (me) {
             for (var i in me.rows) {
-                if (me.rows[i] !== 0 && typeof($("#" + me.rows[i]).position()) !== "undefined" && ( $("#" + me.rows[i]).position().left < (me.$element.width() - $("#" + me.rows[i]).width()) )) {
+                if (me.rows[i] !== 0 &&
+                    typeof ($("#" + me.rows[i]).position()) !== "undefined" &&
+                    ($("#" + me.rows[i]).position().left < (me.$element.width() - $("#" + me.rows[i]).width()))) {
                     me.rows[i] = 0
+                }
+            }
+            for (var i in me.reRows) {
+                if (me.reRows[i] !== 0 &&
+                    typeof ($("#" + me.reRows[i]).position()) !== "undefined" &&
+                    ($("#" + me.reRows[i]).position().left > me.$element.width())) {
+                    me.reRows[i] = 0
                 }
             }
         };
@@ -399,9 +421,9 @@ var cyntax = {
                                     "text-shadow": " 0px 0px 2px #FFFFFF"
                                 });
                             if (danmaku.hasOwnProperty('isnew')) {
-                                $("#" + me.id + "tempDanmaku").css({"border": "2px solid " + danmaku.color});
+                                $("#" + me.id + "tempDanmaku").css({ "border": "2px solid " + danmaku.color });
                             }
-                            if (danmaku.size == 0)  $("#" + me.id + "tempDanmaku").css("font-size", options.fontSizeSmall);
+                            if (danmaku.size == 0) $("#" + me.id + "tempDanmaku").css("font-size", options.fontSizeSmall);
                             if (danmaku.position == 0) {
                                 var flyTmpName = me.id + "fly" + parseInt(new Date().getTime()).toString();
                                 $("#" + me.id + "tempDanmaku").attr("id", flyTmpName);
@@ -420,10 +442,10 @@ var cyntax = {
                                         , "top": top_local
                                         , "left": left_local
                                     });
-                                    var newSpeed = ($(element).width()+400)/me.speed;
+                                    var newSpeed = ($(element).width() + 400) / me.speed;
                                     nowCount++;
                                     nowSecCount++;
-                                    $("#" + flyTmpName).animate({left: -($("#" + flyTmpName).width() + 400)}, newSpeed
+                                    $("#" + flyTmpName).animate({ left: -($("#" + flyTmpName).width() + 400) }, newSpeed
                                         , function () {
                                             $(this).remove();
                                             nowCount--;
@@ -438,9 +460,9 @@ var cyntax = {
                             else if (danmaku.position == 1) {
                                 var topTmpId = me.id + "top" + parseInt(10000 * Math.random()).toString();
                                 $("#" + me.id + "tempDanmaku").attr("id", topTmpId);
-                                var temRow=me.getTopRow(me);
-                                $(element).data("topSpace", options.FontSizeBig*temRow);
-                                me.topRows[temRow]=1;
+                                var temRow = me.getTopRow(me);
+                                $(element).data("topSpace", options.FontSizeBig * temRow);
+                                me.topRows[temRow] = 1;
                                 $("#" + topTmpId).css({
                                     "width": "100%"
                                     , "text-align": "center"
@@ -448,20 +470,20 @@ var cyntax = {
                                     , "top": ($(element).data("topSpace"))
                                     , "left": "0"
                                 });
-                                $("#" + topTmpId).data("row",temRow);
+                                $("#" + topTmpId).data("row", temRow);
                                 $("#" + topTmpId).fadeTo(options.topBottomDanmuTime, $(element).data("opacity"), function () {
-                                        me.topRows[$(this).data("row")]=0;
-                                        $(this).remove();
+                                    me.topRows[$(this).data("row")] = 0;
+                                    $(this).remove();
 
-                                    }
+                                }
                                 );
                             }
                             else if (danmaku.position == 2) {
                                 var bottomTmpId = me.id + "bottom" + parseInt(10000 * Math.random()).toString();
                                 $("#" + me.id + "tempDanmaku").attr("id", bottomTmpId);
-                                var temRow=me.getBottomRow(me);
-                                $(element).data("bottomSpace", options.FontSizeBig*temRow);
-                                me.bottomRows[temRow]=1;
+                                var temRow = me.getBottomRow(me);
+                                $(element).data("bottomSpace", options.FontSizeBig * temRow);
+                                me.bottomRows[temRow] = 1;
                                 $("#" + bottomTmpId).css({
                                     "width": options.width
                                     , "left": "0"
@@ -469,13 +491,46 @@ var cyntax = {
                                     , "position": "absolute"
                                     , "bottom": 0 + $(element).data("bottomSpace")
                                 });
-                                $("#" + bottomTmpId).data("row",temRow);
+                                $("#" + bottomTmpId).data("row", temRow);
                                 $("#" + bottomTmpId).fadeTo(options.topBottomDanmuTime, $(element).data("opacity"), function () {
-                                        me.bottomRows[$(this).data("row")]=0;
-                                        $(this).remove();
-                                    }
+                                    me.bottomRows[$(this).data("row")] = 0;
+                                    $(this).remove();
+                                }
                                 );
 
+                            }
+                            else if (danmaku.position == 3) {
+                                var flyTmpName = me.id + "fly" + parseInt(new Date().getTime()).toString();
+                                $("#" + me.id + "tempDanmaku").attr("id", flyTmpName);
+                                if (nowCount <= maxCount && nowSecCount <= maxCountPerSec) {
+                                    me.checkRow(me);
+                                    var row = me.getReRow(me);
+                                    me.reRows[row] = flyTmpName;
+                                    danmaku["row"] = row;
+                                    var top_local = (row) * options.FontSizeBig;
+                                    danmaku["width"] = $("#" + flyTmpName).width();
+                                    // var offsetLeft = parseInt(Math.random() * 2 * options.FontSizeBig);
+                                    var left_local = -$("#" + flyTmpName).width();
+                                    $("#" + flyTmpName).css({
+                                        "width": $("#" + flyTmpName).width()
+                                        , "position": "absolute"
+                                        , "top": top_local
+                                        , "left": left_local
+                                    });
+                                    var newSpeed = ($(element).width() + 400) / me.speed;
+                                    nowCount++;
+                                    nowSecCount++;
+                                    $("#" + flyTmpName).animate({ left: $(element).width() + 400 }, newSpeed
+                                        , function () {
+                                            $(this).remove();
+                                            nowCount--;
+                                            nowSecCount--;
+                                        }
+                                    );
+                                }
+                                else {
+                                    $("#" + flyTmpName).remove();
+                                }
                             } //else if
                             danmus[i] = danmaku;
                         }   // for in danmus
@@ -547,7 +602,7 @@ var cyntax = {
     };
 
     Danmu.prototype.danmuHideAll = function () {
-        $("#" + this.id + ' .danmaku').css({"opacity": 0});
+        $("#" + this.id + ' .danmaku').css({ "opacity": 0 });
         this.initRows(this);
     };
 
@@ -596,7 +651,7 @@ var cyntax = {
             var data = $this.data('danmu');
             var action = typeof option == 'string' ? option : NaN;
             if (!data) $this.data('danmu', (data = new Danmu(this, options)));
-            if (action)    data[action](arg);
+            if (action) data[action](arg);
         })
     };
 

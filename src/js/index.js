@@ -6,7 +6,9 @@ myPlayer = document.querySelector("#player")
 
 VidCtrl = new MediaController(null, myPlayer);
 
-const { ipcRenderer } = require('electron')
+const {
+  ipcRenderer
+} = require('electron')
 ipcRenderer.on('vidCtrler', (event, arg) => {
   var cmd = 'VidCtrl.' + arg
   console.log(cmd)
@@ -19,7 +21,7 @@ Danmu.danmu({
   top: 0,
   height: "100%",
   width: "100%",
-  speed: 20000,
+  speed: 5500,
   opacity: 1,
   font_size_small: 16,
   font_size_big: 24,
@@ -31,24 +33,67 @@ sendDanmu("这是滚动弹幕", "yellow", 0, 1);
 sendDanmu("这是顶部弹幕", "blue", 1, 1);
 sendDanmu("这是底部弹幕", "red", 2, 1);
 
-$('#danmu').danmu('danmuResume');
-// timedCount();
+Danmu.danmu('danmuResume');
+timedCount();
 
 function timedCount() {
-  $("#time").text($('#danmu').data("nowTime"));
+  $("#time").text(Danmu.data("nowTime"));
   query();
-  t = setTimeout("timedCount()", 50)
+  t = setTimeout("timedCount()", 50);
 }
 
 function setOpacity(opa) {
-  $('#danmu').danmu("setOpacity", opa / 100);
+  Danmu.danmu("setOpacity", opa / 100);
 }
 
 function toggleVisible() {
   if (Danmu.data("opacity") != 0) {
-    Danmu.danmu("setOpacity", 1)
+    Danmu.danmu("setOpacity", 0);
   } else {
-    Danmu.danmu("setOpacity", 0)
+    Danmu.danmu("setOpacity", 1);
+  }
+}
+
+String.prototype.trim = function () {
+  return this.replace(/(^\s*)|(\s*$)/g, "");
+}
+
+function parseTextAndSend(text) {
+  if (text.search(/\#admin/) === -1) {
+    text = text.replace("\#rev", "");
+    sendDanmuFromText(text);
+    return;
+  }
+  text = text.replace("\#admin", "");
+  if (text.search(/\#toggle/) !== -1) {
+    toggleVisible();
+    return;
+  }
+  if (text.search(/\#opa\s*\d{0,3}/) !== -1) {
+    var opa = parseInt(text.match(/\#opa\s*(?<opa>\d{0,3})/).groups['opa']);
+    console.log(opa);
+    setOpacity(opa);
+    return;
+  }
+  if (text.search(/#times\s*\d+/) === -1 && text.search(/#rainbow/) === -1) {
+    sendDanmuFromText(text);
+    return;
+  }
+  var times = 7
+  if (text.search(/#times\s*\d+/) !== -1) {
+    times = parseInt(text.match(/#times\s*(?<t>\d+)/).groups['t']);
+    text = text.replace(/\#times\s*\d+/, "");
+  }
+  if (text.search(/\#rainbow/) !== -1) {
+    rainbow = ["#red", "#FF8C00", "#yellow", "#green", "#47A1D7", "#blue", "#purple"];
+    text = text.replace("\#rainbow", "");
+    for (var i = 0; i < times; ++i) {
+      sendDanmuFromText(rainbow[6 - (i % 7)] + text);
+    }
+  } else {
+    for (var i = 0; i < times; ++i) {
+      sendDanmuFromText(text);
+    }
   }
 }
 
@@ -64,6 +109,10 @@ function sendDanmuFromText(text) {
     position = 2;
     text = text.replace("\#btm", "");
   }
+  if (text.search(/\#rev/) !== -1) {
+    position = 3;
+    text = text.replace("\#rev", "");
+  }
   // set color
   var color = "white";
   regs = ["aqua", "#black", "#blue", "#fuchsia", "#gray", "#green", "#lime", "#maroon", "#navy", "#olive", "#purple", "#red", "#silver", "#teal", "#white", "#yellow"];
@@ -75,7 +124,7 @@ function sendDanmuFromText(text) {
   }
   var regPos = text.search(/\#[0-9a-fA-F]{6}/);
   if (regPos !== -1) {
-    color = text.substring(pos, pos + 7);
+    color = text.match(/(?<color>\#[0-9a-fA-F]{6})/).groups['color']
     text = text.replace(/\#[0-9a-fA-F]{6}/, "");
   }
   // set font size
@@ -83,20 +132,20 @@ function sendDanmuFromText(text) {
   if (text.search(/\#small/) !== -1) {
     size = 0;
     text = text.replace("\#small", "");
-  }//弹幕字体设定
-  sendDanmu(text, color, position, size);
+  }
+  sendDanmu(text.trim(), color, position, size);
 }
 
 function sendDanmu(text, color, position, size) {
-  var time = $('#danmu').data("nowTime") + 1;
+  var time = Danmu.data("nowTime") + 1;
   var text_obj = '{ "text":"' + text + '","color":"' + color + '","size":"' + size + '","position":"' + position + '","time":' + time + '}';
-  $('#danmu').danmu("addDanmu", eval('(' + text_obj + ')'));
+  Danmu.danmu("addDanmu", eval('(' + text_obj + ')'));
 }
 
 
 function query() {
   $.ajax({
-    url: 'http://139.155.26.38:8900/danmu',
+    url: 'http://sjtuji.tech:8091/danmu/dmpush',
     type: 'get',
     dataType: 'json',
     error: function () {
@@ -105,7 +154,7 @@ function query() {
     success: function (msg) {
       var len = msg.length;
       for (var i = 0; i < len; i++) {
-        sendDanmuFromText(msg[i]);
+        parseTextAndSend(msg[i]);
       }
     }
   });
