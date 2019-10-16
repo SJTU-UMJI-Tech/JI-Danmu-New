@@ -13,3 +13,12 @@ Here a default video will only load when no other video in queue, and dragging a
 After dragging a txt file, you can append other file into the queue.
 
 You should explore other features by using and getting familiar with it :).
+
+
+
+## Installation
+
+-   Install `electron`
+-   Install `cnpm`
+-   Run `cnpm start`
+
