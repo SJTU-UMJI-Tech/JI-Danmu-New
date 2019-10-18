@@ -71,6 +71,10 @@ function parseTextAndSend(text) {
     $("span.danmaku").text(text.match(/\#cong\s*(?<text>.+)/).groups['text']);
     return;
   }
+  if (text.search(/\#clear/) !== -1) {
+    $("span.danmaku").remove();
+    return;
+  }
   if (text.search(/\#toggle/) !== -1) {
     toggleVisible();
     return;
