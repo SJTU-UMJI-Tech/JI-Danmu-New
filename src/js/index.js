@@ -26,6 +26,7 @@ Danmu.danmu({
   font_size_small: 16,
   font_size_big: 24,
   top_botton_danmu_time: 6000,
+  maxCountPerSec: 1000,
   maxCountInScreen: 1000
 });
 
@@ -61,17 +62,21 @@ String.prototype.trim = function () {
 function parseTextAndSend(text) {
   if (text.search(/\#admin/) === -1) {
     text = text.replace("\#rev", "");
+    text = text.substring(0, 50);
     sendDanmuFromText(text);
     return;
   }
   text = text.replace("\#admin", "");
+  if (text.search(/\#cong/) !== -1) {
+    $("span.danmaku").text(text.match(/\#cong\s*(?<text>.+)/).groups['text']);
+    return;
+  }
   if (text.search(/\#toggle/) !== -1) {
     toggleVisible();
     return;
   }
   if (text.search(/\#opa\s*\d{0,3}/) !== -1) {
     var opa = parseInt(text.match(/\#opa\s*(?<opa>\d{0,3})/).groups['opa']);
-    console.log(opa);
     setOpacity(opa);
     return;
   }
@@ -85,7 +90,7 @@ function parseTextAndSend(text) {
     text = text.replace(/\#times\s*\d+/, "");
   }
   if (text.search(/\#rainbow/) !== -1) {
-    rainbow = ["#red", "#FF8C00", "#yellow", "#green", "#47A1D7", "#blue", "#purple"];
+    var rainbow = ["#red", "#FF8C00", "#yellow", "#green", "#47A1D7", "#blue", "#purple"];
     text = text.replace("\#rainbow", "");
     for (var i = 0; i < times; ++i) {
       sendDanmuFromText(rainbow[6 - (i % 7)] + text);
@@ -98,7 +103,7 @@ function parseTextAndSend(text) {
 }
 
 function sendDanmuFromText(text) {
-  text = text.replace(/&/g, "&gt;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\"/g, "&quot;").replace(/\n/g, " ");
+  text = text.replace(/\n/g, " ");
   // set position
   var position = 0;
   if (text.search(/\#top/) !== -1) {
@@ -133,13 +138,14 @@ function sendDanmuFromText(text) {
     size = 0;
     text = text.replace("\#small", "");
   }
-  sendDanmu(text.trim(), color, position, size);
+  text = text.trim();
+  sendDanmu(text, color, position, size);
 }
 
 function sendDanmu(text, color, position, size) {
   var time = Danmu.data("nowTime") + 1;
-  var text_obj = '{ "text":"' + text + '","color":"' + color + '","size":"' + size + '","position":"' + position + '","time":' + time + '}';
-  Danmu.danmu("addDanmu", eval('(' + text_obj + ')'));
+  var text_obj = { "text": text, "color": color, "size": size, "position": position, "time": time };
+  Danmu.danmu("addDanmu", text_obj);
 }
 
 
