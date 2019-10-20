@@ -62,6 +62,7 @@ String.prototype.trim = function () {
 function parseTextAndSend(text) {
   if (text.search(/\#admin/) === -1) {
     text = text.replace("\#rev", "");
+    text = text.replace("\#large", "");
     text = text.substring(0, 50);
     sendDanmuFromText(text);
     return;
@@ -142,11 +143,16 @@ function sendDanmuFromText(text) {
     size = 0;
     text = text.replace("\#small", "");
   }
+  if (text.search(/\#large/) !== -1) {
+    size = 2;
+    text = text.replace("\#large", "");
+  }
   text = text.trim();
   sendDanmu(text, color, position, size);
 }
 
 function sendDanmu(text, color, position, size) {
+  if (text.length === 0) return;
   var time = Danmu.data("nowTime") + 1;
   var text_obj = { "text": text, "color": color, "size": size, "position": position, "time": time };
   Danmu.danmu("addDanmu", text_obj);

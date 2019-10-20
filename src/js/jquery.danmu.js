@@ -424,6 +424,7 @@ var cyntax = {
                                 $("#" + me.id + "tempDanmaku").css({ "border": "2px solid " + danmaku.color });
                             }
                             if (danmaku.size == 0) $("#" + me.id + "tempDanmaku").css("font-size", options.fontSizeSmall);
+                            if (danmaku.size == 2) $("#" + me.id + "tempDanmaku").css("font-size", options.fontSizeLarge);
                             if (danmaku.position == 0) {
                                 var flyTmpName = me.id + "fly" + parseInt(new Date().getTime()).toString();
                                 $("#" + me.id + "tempDanmaku").attr("id", flyTmpName);
@@ -562,8 +563,9 @@ var cyntax = {
         danmuLoop: false,
         danmuList: {},
         defaultFontColor: "#FFFFFF",
-        fontSizeSmall: 16,
-        FontSizeBig: 24,
+        fontSizeSmall: 24,
+        FontSizeBig: 36,
+        fontSizeLarge: 72,
         opacity: "0.9",
         topBottomDanmuTime: 6000,
         SubtitleProtection: false,
